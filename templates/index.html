@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Brain Hemorrhage Classifier</title>
+    <style>
+        body {
+            font-family: 'Orbitron', 'Segoe UI', Arial, sans-serif;
+            background: linear-gradient(135deg, #0f2027 0%, #2c5364 100%);
+            margin: 0;
+            padding: 0;
+            min-height: 100vh;
+            overflow-x: hidden;
+        }
+        .container {
+            max-width: 440px;
+            margin: 70px auto 0 auto;
+            background: rgba(255,255,255,0.10);
+            padding: 40px 36px 36px 36px;
+            border-radius: 24px;
+            box-shadow: 0 12px 48px 0 rgba(0,0,0,0.35), 0 1.5px 8px 0 rgba(0,255,255,0.08);
+            backdrop-filter: blur(8px);
+            border: 2.5px solid rgba(0,255,255,0.18);
+            transition: box-shadow 0.3s, border 0.3s;
+            position: relative;
+        }
+        .container:before {
+            content: '';
+            position: absolute;
+            top: -18px; left: -18px; right: -18px; bottom: -18px;
+            border-radius: 32px;
+            z-index: -1;
+            background: linear-gradient(120deg, #00c6ff 0%, #0072ff 100%);
+            opacity: 0.13;
+        }
+        h2 {
+            text-align: center;
+            color: #00eaff;
+            margin-bottom: 32px;
+            letter-spacing: 2px;
+            font-size: 2.1rem;
+            text-shadow: 0 2px 12px #00eaff44;
+        }
+        form {
+            display: flex;
+            flex-direction: column;
+            gap: 22px;
+        }
+        input[type="file"] {
+            display: block;
+            margin: 0 auto;
+            padding: 12px 0;
+            border: 2px dashed #00eaff;
+            border-radius: 10px;
+            background: #0f2027;
+            color: #fff;
+            font-size: 16px;
+            transition: border 0.2s, background 0.2s;
+        }
+        input[type="file"]:focus {
+            border: 2.5px solid #00eaff;
+            outline: none;
+            background: #1a2a3a;
+        }
+        button {
+            width: 100%;
+            padding: 15px;
+            background: linear-gradient(90deg, #00eaff 0%, #0072ff 100%);
+            color: #fff;
+            border: none;
+            border-radius: 10px;
+            font-size: 20px;
+            font-weight: 700;
+            cursor: pointer;
+            box-shadow: 0 4px 24px rgba(0,255,255,0.18);
+            letter-spacing: 1.5px;
+            text-transform: uppercase;
+            transition: background 0.2s, box-shadow 0.2s, transform 0.1s;
+        }
+        button:hover {
+            background: linear-gradient(90deg, #0072ff 0%, #00eaff 100%);
+            box-shadow: 0 8px 32px rgba(0,255,255,0.25);
+            transform: scale(1.03);
+        }
+        .result {
+            margin-top: 32px;
+            text-align: center;
+            font-size: 22px;
+            color: #00eaff;
+            min-height: 38px;
+            padding: 16px 0 0 0;
+            border-radius: 10px;
+            background: rgba(0,255,255,0.07);
+            box-shadow: 0 2px 12px rgba(0,255,255,0.08);
+            word-break: break-word;
+            font-family: 'Orbitron', 'Segoe UI', Arial, sans-serif;
+            letter-spacing: 1.2px;
+        }
+        @media (max-width: 600px) {
+            .container {
+                max-width: 99vw;
+                padding: 16px 2vw 16px 2vw;
+            }
+            h2 { font-size: 1.2rem; }
+            .result { font-size: 1rem; }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h2>Brain Hemorrhage Classifier</h2>
+        <form id="upload-form">
+            <input type="file" id="image-input" name="file" accept="image/*" required>
+            <button type="submit">Predict</button>
+        </form>
+        <div class="result" id="result"></div>
+    </div>
+    <script>
+        document.getElementById('upload-form').addEventListener('submit', async function(e) {
+            e.preventDefault();
+            const fileInput = document.getElementById('image-input');
+            const resultDiv = document.getElementById('result');
+            if (!fileInput.files.length) {
+                resultDiv.textContent = 'Please select an image.';
+                return;
+            }
+            const formData = new FormData();
+            formData.append('file', fileInput.files[0]);
+            resultDiv.textContent = 'Predicting...';
+            try {
+                const response = await fetch('/predict', {
+                    method: 'POST',
+                    body: formData
+                });
+                const data = await response.json();
+                if (data.error) {
+                    resultDiv.textContent = data.error;
+                } else {
+                    resultDiv.innerHTML = `<b>Class:</b> ${data.predicted_class_name}<br><b>Probability:</b> ${(data.probability*100).toFixed(2)}%`;
+                }
+            } catch (err) {
+                resultDiv.textContent = 'Prediction failed.';
+            }
+        });
+    </script>
+</body>
+</html>

@@ -15,7 +15,7 @@ def index():
 class_names = ['EDH Class', 'Healthy Class', 'IPH Class', 'IVH Class', 'SAH Class', 'SDH Class']
 
 # Load the Keras model (update filename if needed)
-model = load_model('best_cnn_model_retrained_1.h5')
+model = load_model('model//best_cnn_model_retrained_1.h5')
 
 @app.route('/predict', methods=['POST'])
 def predict():

@@ -45,7 +45,6 @@ def predict():
 	return jsonify({
 		'predicted_class': class_index,
 		'predicted_class_name': class_name,
-		'probability': probability
 	})
 
 if __name__ == '__main__':

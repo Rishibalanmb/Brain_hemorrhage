@@ -137,7 +137,7 @@
                 if (data.error) {
                     resultDiv.textContent = data.error;
                 } else {
-                    resultDiv.innerHTML = `<b>Class:</b> ${data.predicted_class_name}<br><b>Probability:</b> ${(data.probability*100).toFixed(2)}%`;
+                    resultDiv.innerHTML = `<b>Class:</b> ${data.predicted_class_name}`;
                 }
             } catch (err) {
                 resultDiv.textContent = 'Prediction failed.';
